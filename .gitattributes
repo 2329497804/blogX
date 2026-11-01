@@ -1,0 +1,10 @@
+#Linux/macOS 用 LF（\n）换行，Windows 用 CRLF（\r\n）。团队协作时若不做约定，同一文件在不同系统间 checkout 会整文件"假改动"，diff 全是换行符噪音。
+
+# 自动检测文本文件，并在仓库中统一规范为 LF
+* text=auto
+
+# 针对 Go 源码，确保在任何系统上检出的工作区都使用 LF（防止某些工具因 CRLF 报错）
+*.go text eol=lf
+
+# Windows: git config --global core.autocrlf true
+# Git 会自动在提交时把 CRLF 转为 LF（仓库内统一），检出时再转回 CRLF（方便 Windows 编辑器）
