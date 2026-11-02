@@ -3,10 +3,12 @@ module github.com/2329497804/blogX-server
 go 1.27.1
 
 require (
+	github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20261028042204-6a276cc7c4f9
 	github.com/sirupsen/logrus v1.10.2
 	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/mysql v1.6.0
 	gorm.io/gorm v1.31.2
+	gorm.io/plugin/dbresolver v1.6.2
 )
 
 require (
@@ -16,5 +18,4 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.43.0 // indirect
-	gorm.io/plugin/dbresolver v1.6.2 // indirect
 )
