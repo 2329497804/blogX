@@ -10,6 +10,7 @@ func FlagDB() {
 	err := global.DB.AutoMigrate(
 		&models.UserModel{},
 		&models.UserConfModel{},
+		&models.ArticleModel{},
 	)
 	if err != nil {
 		logrus.Errorf("AutoMigrate err: %v", err)
