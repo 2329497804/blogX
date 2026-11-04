@@ -1,5 +1,6 @@
 package models
 
+// ArticleModel 文章表
 type ArticleModel struct {
 	Model
 	Title        string    `gorm:"size:32" json:"title"`
