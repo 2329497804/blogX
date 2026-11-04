@@ -13,6 +13,11 @@ func FlagDB() {
 		&models.ArticleModel{},
 		&models.CategoryModel{},
 		&models.ArticleDiggModel{},
+		&models.CollectModel{},
+		&models.UserArticleCollectModel{},
+		&models.UserTopArticleModel{},
+		&models.ImageModel{},
+		&models.UserArticleLookHistoryModel{},
 	)
 	if err != nil {
 		logrus.Errorf("AutoMigrate err: %v", err)
