@@ -19,6 +19,9 @@ func FlagDB() {
 		&models.ImageModel{},
 		&models.UserArticleLookHistoryModel{},
 		&models.CommentModel{},
+		&models.BannerModel{},
+		&models.LogModel{},
+		&models.UserLoginModel{},
 	)
 	if err != nil {
 		logrus.Errorf("AutoMigrate err: %v", err)
