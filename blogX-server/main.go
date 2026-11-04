@@ -4,6 +4,7 @@ import (
 	"github.com/2329497804/blogX-server/core"
 	"github.com/2329497804/blogX-server/flags"
 	"github.com/2329497804/blogX-server/global"
+	"github.com/2329497804/blogX-server/router"
 )
 
 func main() {
@@ -13,4 +14,7 @@ func main() {
 	global.DB = core.InitDB()
 
 	flags.Run()
+
+	//启动Web程序
+	router.Run()
 }
