@@ -5,6 +5,7 @@ import (
 
 	"github.com/2329497804/blogX-server/service/log_service"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 type SiteApi struct {
@@ -16,8 +17,18 @@ func (SiteApi) SiteInfoView(c *gin.Context) {
 	return
 }
 
+type SiteUpdateRequest struct {
+	Name string `json:"name" binding:"required"`
+}
+
 func (SiteApi) SiteUpdateView(c *gin.Context) {
 	log := log_service.NewActionLogByGin(c)
+
+	var req SiteUpdateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		logrus.Errorf(err.Error())
+	}
+	fmt.Println("req:", req)
 
 	log.Save()
 
