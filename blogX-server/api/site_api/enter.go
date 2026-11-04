@@ -22,7 +22,7 @@ type SiteUpdateRequest struct {
 }
 
 func (SiteApi) SiteUpdateView(c *gin.Context) {
-	log := log_service.NewActionLogByGin(c)
+	log := log_service.GetLog(c)
 
 	var req SiteUpdateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

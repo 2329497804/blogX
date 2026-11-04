@@ -1,6 +1,9 @@
 package log_service
 
 import (
+	"bytes"
+	"io"
+
 	"github.com/2329497804/blogX-server/core"
 	"github.com/2329497804/blogX-server/global"
 	"github.com/2329497804/blogX-server/models"
@@ -11,9 +14,12 @@ import (
 
 // ActionLog 操作日志
 type ActionLog struct {
-	c     *gin.Context
-	level enum.LogLevelType
-	title string
+	c            *gin.Context
+	level        enum.LogLevelType
+	title        string
+	requestBody  []byte
+	responseBody []byte
+	log          *models.LogModel
 }
 
 func NewActionLogByGin(c *gin.Context) *ActionLog {
@@ -30,12 +36,32 @@ func (ac *ActionLog) SetTitle(title string) {
 	ac.title = title
 }
 
+func (ac *ActionLog) SetRequestBody(c *gin.Context) {
+	byteData, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		logrus.Error(err.Error())
+	}
+	c.Request.Body = io.NopCloser(bytes.NewReader(byteData))
+	ac.requestBody = byteData
+}
+
+func (ac *ActionLog) SetResponseBody(res []byte) {
+	ac.responseBody = res
+}
+
 func (ac *ActionLog) Save() {
+	if ac.log != nil {
+		//之前已经save过，应该更新
+		global.DB.Model(ac.log).Updates(map[string]any{
+			"title": "更新",
+		})
+		return
+	}
+
 	ip := ac.c.ClientIP()
 	addr := core.GetIPAddr(ip)
 	userID := uint(1)
-	
-	err := global.DB.Create(&models.LogModel{
+	log := models.LogModel{
 		LogType: enum.ActionLogType,
 		Title:   ac.title,
 		Content: "",
@@ -43,8 +69,22 @@ func (ac *ActionLog) Save() {
 		UserID:  userID,
 		IP:      ip,
 		Addr:    addr,
-	}).Error
+	}
+	err := global.DB.Create(&log).Error
 	if err != nil {
 		logrus.Errorf("日志创建失败: %s", err)
 	}
+	ac.log = &log
+}
+
+func GetLog(c *gin.Context) *ActionLog {
+	_log, ok := c.Get("log")
+	if !ok {
+		return NewActionLogByGin(c)
+	}
+	log, ok := _log.(*ActionLog)
+	if !ok {
+		return NewActionLogByGin(c)
+	}
+	return log
 }
