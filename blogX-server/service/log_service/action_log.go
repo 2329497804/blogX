@@ -2,8 +2,10 @@ package log_service
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
+	"reflect"
 	"strings"
 
 	"github.com/2329497804/blogX-server/core"
@@ -61,6 +63,36 @@ func (ac *ActionLog) ShowResponse() {
 	ac.showResponse = true
 }
 
+func (ac *ActionLog) setItem(label string, value any, levelType enum.LogLevelType) {
+	var v string
+	t := reflect.TypeOf(value)
+	switch t.Kind() {
+	case reflect.Struct, reflect.Map, reflect.Slice:
+		byteData, _ := json.Marshal(value)
+		v = string(byteData)
+	default:
+		v = fmt.Sprintf("%v", value)
+	}
+
+	ac.itemList = append(ac.itemList, fmt.Sprintf("<div class=\"log_item %s\"><div class=\"log_item_label\">%s</div><div class=\"log_item_content\">%s</div></div>",
+		levelType,
+		label,
+		v,
+	))
+}
+func (ac *ActionLog) SetItem(label string, value any) {
+	ac.setItem(label, value, enum.InfoLogLevelType)
+}
+func (ac *ActionLog) SetItemInfo(label string, value any) {
+	ac.setItem(label, value, enum.InfoLogLevelType)
+}
+func (ac *ActionLog) SetItemWarn(label string, value any) {
+	ac.setItem(label, value, enum.WarnLogLevelType)
+}
+func (ac *ActionLog) SetItemError(label string, value any) {
+	ac.setItem(label, value, enum.ErrorLogLevelType)
+}
+
 func (ac *ActionLog) Save() {
 	if ac.log != nil {
 		//之前已经save过，应该更新
@@ -69,9 +101,10 @@ func (ac *ActionLog) Save() {
 		})
 		return
 	}
+	var newItemList []string
 	//设置请求
 	if ac.showRequest {
-		ac.itemList = append(ac.itemList, fmt.Sprintf("<div class=\"log_request\"><div class=\"log_request_head\"><span class=\"log_request_method delete\">%s</span><span class=\"log_request_path\">%s</span></div><div class=\"log_request_body\"><pre class=\"log_json_body\">%s</pre></div></div>",
+		newItemList = append(newItemList, fmt.Sprintf("<div class=\"log_request\"><div class=\"log_request_head\"><span class=\"log_request_method delete\">%s</span><span class=\"log_request_path\">%s</span></div><div class=\"log_request_body\"><pre class=\"log_json_body\">%s</pre></div></div>",
 			ac.c.Request.Method,
 			ac.c.Request.URL.Path,
 			string(ac.requestBody),
@@ -79,10 +112,11 @@ func (ac *ActionLog) Save() {
 	}
 
 	//中间的Content
+	newItemList = append(newItemList, ac.itemList...)
 
 	//设置响应
 	if ac.showResponse {
-		ac.itemList = append(ac.itemList, fmt.Sprintf("<div class=\"log_response\"><pre class=\"log_json_body\">%s</pre></div>",
+		newItemList = append(newItemList, fmt.Sprintf("<div class=\"log_response\"><pre class=\"log_json_body\">%s</pre></div>",
 			string(ac.responseBody),
 		))
 	}
@@ -93,7 +127,7 @@ func (ac *ActionLog) Save() {
 	log := models.LogModel{
 		LogType: enum.ActionLogType,
 		Title:   ac.title,
-		Content: strings.Join(ac.itemList, "\n"),
+		Content: strings.Join(newItemList, "\n"),
 		Level:   ac.level,
 		UserID:  userID,
 		IP:      ip,

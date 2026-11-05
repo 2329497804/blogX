@@ -2,6 +2,7 @@ package site_api
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/2329497804/blogX-server/service/log_service"
 	"github.com/gin-gonic/gin"
@@ -25,12 +26,17 @@ func (SiteApi) SiteUpdateView(c *gin.Context) {
 	log := log_service.GetLog(c)
 	log.ShowRequest()
 	log.ShowResponse()
+	log.SetTitle("更新站点")
+	log.SetItem("请求时间", time.Now())
 
 	var req SiteUpdateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		logrus.Errorf(err.Error())
 	}
-	fmt.Println("req:", req)
+
+	log.SetItem("结构体", req)
+	log.SetItem("切片", []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"})
+	log.SetItem("数字", 123)
 
 	c.JSON(200, gin.H{"code": 0, "msg": "站点信息"})
 	return

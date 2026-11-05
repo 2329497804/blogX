@@ -8,3 +8,15 @@ const (
 	WarnLogLevelType
 	ErrorLogLevelType
 )
+
+func (level LogLevelType) String() string {
+	switch level {
+	case InfoLogLevelType:
+		return "info"
+	case WarnLogLevelType:
+		return "warn"
+	case ErrorLogLevelType:
+		return "error"
+	}
+	return ""
+}
