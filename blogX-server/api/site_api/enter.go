@@ -24,10 +24,14 @@ type SiteUpdateRequest struct {
 
 func (SiteApi) SiteUpdateView(c *gin.Context) {
 	log := log_service.GetLog(c)
+	log.ShowRequestHeader()
 	log.ShowRequest()
+	log.ShowResponseHeader()
 	log.ShowResponse()
 	log.SetTitle("更新站点")
 	log.SetItem("请求时间", time.Now())
+	log.SetImage("https://cdn-test.zjzw.com.cn/course/cover/20261105/c3d8425f-8a76-4b3d-b468-7849bbaefde7.png")
+	log.SetLink("go学习", "https://www.fengfengzhidao.com")
 
 	var req SiteUpdateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
