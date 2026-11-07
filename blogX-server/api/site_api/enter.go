@@ -38,8 +38,11 @@ func (SiteApi) SiteUpdateView(c *gin.Context) {
 	}
 
 	log.SetItem("结构体", req)
+	log.Save()
 	log.SetItem("切片", []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j"})
+	log.Save()
 	log.SetItem("数字", 123)
+	log.Save()
 
 	c.JSON(200, gin.H{"code": 0, "msg": "站点信息"})
 	return

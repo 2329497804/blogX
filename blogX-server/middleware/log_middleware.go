@@ -22,7 +22,7 @@ func LogMiddleWare(c *gin.Context) {
 	//响应中间件
 	log.SetResponseHeader(res.Head)
 	log.SetResponseBody(res.Body)
-	log.Save()
+	log.MiddlewareSave()
 }
 
 type ResponseWriter struct {
