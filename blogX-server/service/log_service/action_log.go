@@ -134,13 +134,6 @@ func (ac *ActionLog) SetError(label string, err error) {
 }
 
 func (ac *ActionLog) Save() {
-	if ac.log != nil {
-		//之前已经save过，应该更新
-		global.DB.Model(ac.log).Updates(map[string]any{
-			"title": "更新",
-		})
-		return
-	}
 	var newItemList []string
 	//设置请求头
 	if ac.showRequestHeader {
