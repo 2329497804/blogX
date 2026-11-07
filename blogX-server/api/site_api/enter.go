@@ -6,7 +6,6 @@ import (
 
 	"github.com/2329497804/blogX-server/service/log_service"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
 type SiteApi struct {
@@ -35,7 +34,7 @@ func (SiteApi) SiteUpdateView(c *gin.Context) {
 
 	var req SiteUpdateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		logrus.Errorf(err.Error())
+		log.SetError("参数绑定失败", err)
 	}
 
 	log.SetItem("结构体", req)
