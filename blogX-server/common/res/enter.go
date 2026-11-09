@@ -1,6 +1,9 @@
 package res
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/2329497804/blogX-server/utils"
+	"github.com/gin-gonic/gin"
+)
 
 type Code int
 
@@ -43,6 +46,13 @@ func OKWithMsg(msg string, c *gin.Context) {
 func OKWithData(data any, c *gin.Context) {
 	OK(SuccessCode.String(), data, c)
 }
+func OKWithList(list any, count int, c *gin.Context) {
+	Response{SuccessCode, SuccessCode.String(),
+		map[string]any{
+			"list":  list,
+			"count": count,
+		}}.Json(c)
+}
 
 func FailWithMsg(msg string, c *gin.Context) {
 	Response{FailValidCode, msg, empty}.Json(c)
@@ -52,4 +62,8 @@ func FailWithData(data any, msg string, c *gin.Context) {
 }
 func FailWithCode(code Code, c *gin.Context) {
 	Response{code, code.String(), empty}.Json(c)
+}
+func FailWithError(err error, c *gin.Context) {
+	data, msg := utils.ValidateError(err)
+	Response{FailValidCode, msg, data}.Json(c)
 }
