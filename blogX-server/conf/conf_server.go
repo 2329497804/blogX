@@ -3,9 +3,10 @@ package conf
 import "fmt"
 
 type Server struct {
-	Host string `yaml:"host"`
-	Port int    `yaml:"port"`
-	Env  string `yaml:"env"`
+	Host    string `yaml:"host"`
+	Port    int    `yaml:"port"`
+	Env     string `yaml:"env"`
+	GinMode string `yaml:"gin_mode"`
 }
 
 func (s *Server) Addr() string {

@@ -7,12 +7,19 @@ import (
 )
 
 func Run() {
+	gin.SetMode(global.Config.Server.GinMode)
+
 	r := gin.Default()
+
+	r.Static("/static", "./uploads")
+
 	nr := r.Group("/api")
 
 	nr.Use(middleware.LogMiddleWare)
 	SiteRouter(nr)
 
 	addr := global.Config.Server.Addr()
-	r.Run(addr)
+	if err := r.Run(addr); err != nil {
+		panic(err)
+	}
 }
