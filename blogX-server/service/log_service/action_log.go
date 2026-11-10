@@ -189,7 +189,7 @@ func (ac *ActionLog) Save() {
 	addr := core.GetIPAddr(ip)
 	userID := uint(0)
 	claims, err := jwts.ParseTokenByGin(ac.c)
-	if err == nil && claims != nil {
+	if err == nil {
 		userID = claims.UserID
 	}
 	log := models.LogModel{

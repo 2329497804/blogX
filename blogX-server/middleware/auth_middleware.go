@@ -9,16 +9,8 @@ import (
 )
 
 func AuthMiddleware(c *gin.Context) {
-	t, ok := redis_jwt.HasTokenBlackByGin(c)
-	if ok {
-		res.FailWithMsg(t.Msg(), c)
-		c.Abort()
-		return
-	}
-	claims, err := jwts.ParseTokenByGin(c)
-	if err != nil {
-		res.FailWithError(err, c)
-		c.Abort()
+	claims, ok := authenticate(c)
+	if !ok {
 		return
 	}
 	c.Set("claims", claims)
@@ -26,23 +18,41 @@ func AuthMiddleware(c *gin.Context) {
 }
 
 func AdminMiddleware(c *gin.Context) {
-	t, ok := redis_jwt.HasTokenBlackByGin(c)
-	if ok {
-		res.FailWithMsg(t.Msg(), c)
-		c.Abort()
-		return
-	}
-	claims, err := jwts.ParseTokenByGin(c)
-	if err != nil {
-		res.FailWithError(err, c)
-		c.Abort()
-		return
+	var claims jwts.MyClaims
+
+	if v, ok := c.Get("claims"); ok {
+		// 已经经过AuthMiddleware 复用
+		claims = v.(jwts.MyClaims)
+	} else {
+		var ok bool
+		claims, ok = authenticate(c)
+		if !ok {
+			return
+		}
+		c.Set("claims", claims)
 	}
 	if claims.Role != enum.AdminRole {
 		res.FailWithMsg("权限错误", c)
 		c.Abort()
 		return
 	}
-	c.Set("claims", claims)
 	return
+}
+
+func authenticate(c *gin.Context) (jwts.MyClaims, bool) {
+	t, ok := redis_jwt.HasTokenBlackByGin(c)
+	if ok {
+		res.FailWithMsg(t.Msg(), c)
+		c.Abort()
+		return jwts.MyClaims{}, false
+	}
+
+	claims, err := jwts.ParseTokenByGin(c)
+	if err != nil {
+		res.FailWithError(err, c)
+		c.Abort()
+		return jwts.MyClaims{}, false
+	}
+
+	return claims, true
 }

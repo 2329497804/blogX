@@ -17,7 +17,7 @@ func NewLoginSuccess(c *gin.Context, loginType enum.LoginType) {
 	userID := uint(0)
 	userName := ""
 	claims, err := jwts.ParseTokenByGin(c)
-	if err == nil && claims != nil {
+	if err == nil {
 		userID = claims.UserID
 		userName = claims.Username
 	}

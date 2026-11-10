@@ -49,7 +49,7 @@ func TokenBlack(token string, value BlackType) {
 	key := fmt.Sprintf("token_black_%s", token)
 
 	claims, err := jwts.ParseToken(token)
-	if err != nil || claims == nil {
+	if err != nil {
 		logrus.Errorf("token解析失败: %s", err)
 		return
 	}

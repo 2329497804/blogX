@@ -2,6 +2,7 @@ package jwts
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -35,29 +36,32 @@ func GetToken(claims Claims) (string, error) {
 	return token.SignedString([]byte(global.Config.Jwt.Secret)) // 进行签名生成对应的token
 }
 
-func ParseToken(tokenString string) (*MyClaims, error) {
+func ParseToken(tokenString string) (MyClaims, error) {
 	if tokenString == "" {
-		return nil, errors.New("请登录")
+		return MyClaims{}, errors.New("请登录")
 	}
 	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(global.Config.Jwt.Secret), nil
 	})
 	if err != nil {
 		if strings.Contains(err.Error(), "token is expired") {
-			return nil, errors.New("token过期")
+			return MyClaims{}, errors.New("token过期")
 		}
 		if strings.Contains(err.Error(), "signature is invalid") {
-			return nil, errors.New("token无效")
+			return MyClaims{}, errors.New("token无效")
 		}
 		if strings.Contains(err.Error(), "token contains an invalid") {
-			return nil, errors.New("token非法")
+			return MyClaims{}, errors.New("token非法")
 		}
-		return nil, err
+		return MyClaims{}, err
 	}
 	if claims, ok := token.Claims.(*MyClaims); ok && token.Valid {
-		return claims, nil
+		return *claims, nil
+	} else {
+		fmt.Println(ok, token.Valid)
 	}
-	return nil, errors.New("invalid token")
+	fmt.Printf("claims: %+v\n", token.Claims)
+	return MyClaims{}, errors.New("invalid token")
 }
 
 func GetTokenByGin(c *gin.Context) string {
@@ -68,7 +72,7 @@ func GetTokenByGin(c *gin.Context) string {
 	return token
 }
 
-func ParseTokenByGin(c *gin.Context) (*MyClaims, error) {
+func ParseTokenByGin(c *gin.Context) (MyClaims, error) {
 	token := GetTokenByGin(c)
 	return ParseToken(token)
 }
