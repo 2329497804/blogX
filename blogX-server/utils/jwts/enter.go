@@ -6,15 +6,16 @@ import (
 	"time"
 
 	"github.com/2329497804/blogX-server/global"
+	"github.com/2329497804/blogX-server/models/enum"
 	"github.com/gin-gonic/gin"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
 type Claims struct {
-	UserID   uint   `json:"userID"`
-	Username string `json:"username"`
-	Role     int8   `json:"role"`
+	UserID   uint          `json:"userID"`
+	Username string        `json:"username"`
+	Role     enum.RoleType `json:"role"`
 }
 
 type MyClaims struct {
@@ -26,8 +27,8 @@ func GetToken(claims Claims) (string, error) {
 	cla := MyClaims{
 		Claims: claims,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Duration(global.Config.Jwt.Expire) * time.Second).Unix(), // 过期时间
-			Issuer:    global.Config.Jwt.Issuer,                                                     // 签发人
+			ExpiresAt: time.Now().Add(time.Duration(global.Config.Jwt.Expire) * time.Hour).Unix(), // 过期时间
+			Issuer:    global.Config.Jwt.Issuer,                                                   // 签发人
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, cla)
