@@ -1,7 +1,7 @@
 package res
 
 import (
-	"github.com/2329497804/blogX-server/utils"
+	"github.com/2329497804/blogX-server/utils/validate"
 	"github.com/gin-gonic/gin"
 )
 
@@ -64,6 +64,6 @@ func FailWithCode(code Code, c *gin.Context) {
 	Response{code, code.String(), empty}.Json(c)
 }
 func FailWithError(err error, c *gin.Context) {
-	data, msg := utils.ValidateError(err)
+	data, msg := validate.ValidateError(err)
 	Response{FailValidCode, msg, data}.Json(c)
 }

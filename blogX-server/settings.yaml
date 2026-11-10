@@ -6,6 +6,10 @@ server:
 log:
   app: blogX-server
   dir: logs
+jwt:
+  expire: 3
+  secret: xxx
+  issuer: fdd
 db:
   user: root
   password: 204520

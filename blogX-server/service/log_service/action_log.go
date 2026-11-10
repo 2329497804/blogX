@@ -13,7 +13,8 @@ import (
 	"github.com/2329497804/blogX-server/global"
 	"github.com/2329497804/blogX-server/models"
 	"github.com/2329497804/blogX-server/models/enum"
-	"github.com/2329497804/blogX-server/utils"
+	"github.com/2329497804/blogX-server/utils/errors"
+	"github.com/2329497804/blogX-server/utils/jwts"
 	"github.com/gin-gonic/gin"
 	e "github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -124,7 +125,7 @@ func (ac *ActionLog) SetItemError(label string, value any) {
 }
 
 func (ac *ActionLog) SetError(label string, err error) {
-	msg := utils.ErrorStack(e.WithStack(err))
+	msg := errors.ErrorStack(e.WithStack(err))
 	logrus.Errorf("%s %s", label, err)
 	ac.itemList = append(ac.itemList, fmt.Sprintf("<div class=\"log_error\"><div class=\"line\"><div class=\"label\">%s</div><div class=\"value\">%s</div><div class=\"type\">%T</div></div><div class=\"stack\">%s</div></div>",
 		label,
@@ -186,7 +187,11 @@ func (ac *ActionLog) Save() {
 
 	ip := ac.c.ClientIP()
 	addr := core.GetIPAddr(ip)
-	userID := uint(1)
+	userID := uint(0)
+	claims, err := jwts.ParseTokenByGin(ac.c)
+	if err == nil && claims != nil {
+		userID = claims.UserID
+	}
 	log := models.LogModel{
 		LogType: enum.ActionLogType,
 		Title:   ac.title,
@@ -196,7 +201,7 @@ func (ac *ActionLog) Save() {
 		IP:      ip,
 		Addr:    addr,
 	}
-	err := global.DB.Create(&log).Error
+	err = global.DB.Create(&log).Error
 	if err != nil {
 		logrus.Errorf("日志创建失败: %s", err)
 	}

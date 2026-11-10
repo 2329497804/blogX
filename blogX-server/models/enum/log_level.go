@@ -16,7 +16,7 @@ func (level LogLevelType) String() string {
 	case WarnLogLevelType:
 		return "warn"
 	case ErrorLogLevelType:
-		return "error"
+		return "errors"
 	}
 	return ""
 }
