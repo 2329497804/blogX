@@ -6,6 +6,7 @@ import (
 
 	"github.com/2329497804/blogX-server/global"
 	"github.com/2329497804/blogX-server/utils/jwts"
+	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
@@ -20,6 +21,17 @@ const (
 
 func (b BlackType) String() string {
 	return fmt.Sprintf("%d", b)
+}
+func (b BlackType) Msg() string {
+	switch b {
+	case UserBlackType:
+		return "已注销"
+	case AdminBlackType:
+		return "禁止登录"
+	case DeviceBlackType:
+		return "设备下线"
+	}
+	return "禁止登录"
 }
 func ParseBlackType(s string) BlackType {
 	switch s {
@@ -56,4 +68,9 @@ func HasTokenBlack(token string) (b BlackType, ok bool) {
 		return
 	}
 	return ParseBlackType(res), true
+}
+
+func HasTokenBlackByGin(c *gin.Context) (BlackType, bool) {
+	token := jwts.GetTokenByGin(c)
+	return HasTokenBlack(token)
 }

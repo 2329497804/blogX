@@ -60,11 +60,15 @@ func ParseToken(tokenString string) (*MyClaims, error) {
 	return nil, errors.New("invalid token")
 }
 
-func ParseTokenByGin(c *gin.Context) (*MyClaims, error) {
+func GetTokenByGin(c *gin.Context) string {
 	token := c.GetHeader("token")
 	if token == "" {
 		token = c.Query("token")
 	}
+	return token
+}
 
+func ParseTokenByGin(c *gin.Context) (*MyClaims, error) {
+	token := GetTokenByGin(c)
 	return ParseToken(token)
 }
