@@ -3,6 +3,7 @@ package log_api
 import (
 	"github.com/2329497804/blogX-server/common"
 	"github.com/2329497804/blogX-server/common/res"
+	"github.com/2329497804/blogX-server/global"
 	"github.com/2329497804/blogX-server/models"
 	"github.com/2329497804/blogX-server/models/enum"
 	"github.com/gin-gonic/gin"
@@ -62,4 +63,23 @@ func (LogApi) LogListView(c *gin.Context) {
 	}
 
 	res.OKWithList(_list, count, c)
+}
+
+func (LogApi) LogReadView(c *gin.Context) {
+	var req models.IDRequest
+	if err := c.ShouldBindUri(&req); err != nil {
+		res.FailWithError(err, c)
+		return
+	}
+	var log models.LogModel
+	err := global.DB.Take(&log, req.ID).Error
+	if err != nil {
+		res.FailWithMsg("不存在的日志", c)
+		return
+	}
+	if !log.IsRead{
+		global.DB.Model(&log).Update("is_read", true)
+	}
+
+	res.OKWithMsg("日志读取成功", c)
 }

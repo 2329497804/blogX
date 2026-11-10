@@ -9,3 +9,7 @@ type Model struct {
 	CreatedAt time.Time `json:"CreatedAt"`
 	UpdatedAt time.Time `json:"UpdatedAt"`
 }
+
+type IDRequest struct {
+	ID uint `json:"id" form:"id" uri:"id"`
+}
