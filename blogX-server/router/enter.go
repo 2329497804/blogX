@@ -17,6 +17,7 @@ func Run() {
 
 	nr.Use(middleware.LogMiddleWare)
 	SiteRouter(nr)
+	LogRouter(nr)
 
 	addr := global.Config.Server.Addr()
 	if err := r.Run(addr); err != nil {
