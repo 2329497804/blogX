@@ -10,6 +10,10 @@ jwt:
   expire: 3
   secret: xxx
   issuer: fdd
+redis:
+  addr: 127.0.0.1:6379
+  password:
+  db: 2
 db:
   user: root
   password: 204520

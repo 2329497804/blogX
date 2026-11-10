@@ -12,6 +12,7 @@ func main() {
 	global.Config = core.ReadConfig()
 	core.InitLogrus()
 	global.DB = core.InitDB()
+	global.Redis = core.InitRedis()
 
 	flags.Run()
 
