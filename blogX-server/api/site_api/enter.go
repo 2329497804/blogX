@@ -40,16 +40,25 @@ func (SiteApi) SiteInfoView(c *gin.Context) {
 		res.FailWithMsg("权限不足", c)
 	}
 
+	//敏感信息打码返回
 	var data any
 	switch req.Name {
 	case "email":
-		data = global.Config.Email
+		v := global.Config.Email
+		v.AuthCode = "********"
+		data = v
 	case "qq":
-		data = global.Config.QQ
+		v := global.Config.QQ
+		v.AppKey = "********"
+		data = v
 	case "qiNiu":
-		data = global.Config.QiNiu
+		v := global.Config.QiNiu
+		v.SecretKey = "********"
+		data = v
 	case "ai":
-		data = global.Config.AI
+		v := global.Config.AI
+		v.Secret = "********"
+		data = v
 	default:
 		res.FailWithMsg("不存在的配置", c)
 		return
@@ -67,6 +76,11 @@ func isAdmin(c *gin.Context) (bool, error) {
 		return false, nil
 	}
 	return true, nil
+}
+
+// SiteInfoQQView QQ登陆地址
+func (SiteApi) SiteInfoQQView(c *gin.Context) {
+	res.OKWithData(global.Config.QQ.Url(), c)
 }
 
 type SiteUpdateRequest struct {
