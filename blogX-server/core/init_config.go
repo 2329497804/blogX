@@ -6,6 +6,7 @@ import (
 
 	"github.com/2329497804/blogX-server/conf"
 	"github.com/2329497804/blogX-server/flags"
+	"github.com/2329497804/blogX-server/global"
 	"gopkg.in/yaml.v3"
 )
 
@@ -21,4 +22,16 @@ func ReadConfig() (c *conf.Config) {
 	}
 	fmt.Printf("读取配置文件 %s 成功\n", flags.FlagOptions.File)
 	return
+}
+
+func SetConfig() error {
+	byteData, err := yaml.Marshal(global.Config)
+	if err != nil {
+		return fmt.Errorf("读取配置失败 %s", err)
+	}
+	err = os.WriteFile(flags.FlagOptions.File, byteData, 0666)
+	if err != nil {
+		return fmt.Errorf("设置配置文件失败 %s", err)
+	}
+	return nil
 }
