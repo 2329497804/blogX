@@ -22,6 +22,7 @@ type About struct {
 	Gitee    string `yaml:"gitee" json:"gitee"`
 	Bilibili string `yaml:"bilibili" json:"bilibili"`
 	Github   string `yaml:"github" json:"github"`
+	Version  string `yaml:"-" json:"version"`
 }
 type Login struct {
 	QQLogin          bool `yaml:"qq_login" json:"QQLogin"`

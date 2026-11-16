@@ -26,6 +26,7 @@ func (SiteApi) SiteInfoView(c *gin.Context) {
 
 	// 站点信息不需要登录
 	if req.Name == "site" {
+		global.Config.Site.Version = global.Version
 		res.OKWithData(global.Config.Site, c)
 		return
 	}
