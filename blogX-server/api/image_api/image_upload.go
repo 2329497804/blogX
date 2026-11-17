@@ -32,8 +32,9 @@ func (ImageApi) ImageUploadView(c *gin.Context) {
 		return
 	}
 	// 文件后缀判断
+	fileName := fileHeader.Filename
 	var suffix string
-	suffix, err = imageSuffixJudge(fileHeader.Filename)
+	suffix, err = imageSuffixJudge(fileName)
 	if err != nil {
 		res.FailWithError(err, c)
 		return
@@ -47,19 +48,18 @@ func (ImageApi) ImageUploadView(c *gin.Context) {
 	defer file.Close()
 	byteData, err := io.ReadAll(file)
 	hash := utils.MD5(byteData)
-	fileName := hash + "." + suffix
 	// 判断是否存在
 	var m models.ImageModel
 	err = global.DB.Take(&m, "hash = ?", hash).Error
 	if err == nil {
 		// 文件已存在
-		logrus.Infof("上传图片重复: %s <==> %s", m.Filename, fileName)
+		logrus.Infof("上传图片重复: %s <==> %s, Hash:%s", m.Filename, fileName, hash)
 		res.OK(m.WebPath(), "图片上传成功", c)
 		return
 	}
 	// 存储文件
 	fileDir := global.Config.Upload.Image.Dir
-	filePath := fmt.Sprintf("uploads/%s/%s", fileDir, fileName)
+	filePath := fmt.Sprintf("uploads/%s/%s.%s", fileDir, hash, suffix)
 	err = c.SaveUploadedFile(fileHeader, filePath)
 	if err != nil {
 		res.FailWithError(err, c)
