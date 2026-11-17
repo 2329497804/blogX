@@ -1,6 +1,12 @@
 package models
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+
+	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
+)
 
 // ImageModel 图片表
 type ImageModel struct {
@@ -13,4 +19,12 @@ type ImageModel struct {
 
 func (i ImageModel) WebPath() string {
 	return fmt.Sprintf("/" + i.Path)
+}
+
+func (i ImageModel) BeforeDelete(db *gorm.DB) error {
+	err := os.Remove(i.Path)
+	if err != nil {
+		logrus.Warnf("删除图片文件失败: %s", err)
+	}
+	return nil
 }

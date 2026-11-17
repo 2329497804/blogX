@@ -12,4 +12,6 @@ func ImageRouter(r *gin.RouterGroup) {
 
 	app := api.App.ImageApi
 	r.POST("", app.ImageUploadView)
+	r.GET("", middleware.AdminMiddleware, app.ImageListView)
+	r.DELETE("", middleware.AdminMiddleware, app.ImageDeleteView)
 }
