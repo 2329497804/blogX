@@ -11,13 +11,14 @@ func Run() {
 
 	r := gin.Default()
 
-	r.Static("/static", "./uploads")
+	r.Static("/uploads", "./uploads")
 
 	nr := r.Group("/api")
 
 	nr.Use(middleware.LogMiddleWare)
 	SiteRouter(nr)
 	LogRouter(nr)
+	ImageRouter(nr)
 
 	addr := global.Config.Server.Addr()
 	if err := r.Run(addr); err != nil {
