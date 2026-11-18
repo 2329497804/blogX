@@ -11,7 +11,7 @@ type Model struct {
 }
 
 type IDRequest struct {
-	ID uint `json:"id" form:"id" uri:"id"`
+	ID uint `json:"id" form:"id" uri:"id" binding:"required"`
 }
 
 type RemoveRequest struct {
