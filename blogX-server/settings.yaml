@@ -82,13 +82,14 @@ qq:
     redirect: ""
 qiniu:
     enable: true
-    access_key: ""
-    secret_key: ""
-    bucket: ""
-    uri: ""
-    region: ""
-    prefix: ""
-    size: 0
+    access_key: "vwFpBUls4wyr4qciQNOZUd-974idkxl_ut0oZd00"
+    secret_key: "TQtfUAG_yHYp5B5p9lM6sWJZixNKoCS0x6xs5s0y"
+    bucket: "fdd-blogx"
+    uri: "http://tomicocy3.hb-bkt.clouddn.com"
+    region: "z1"
+    prefix: "blogx"
+    size: 3
+    expire: 60
 ai:
     enable: true
     secret: ""

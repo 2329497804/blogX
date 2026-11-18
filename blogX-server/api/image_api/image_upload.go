@@ -1,16 +1,15 @@
 package image_api
 
 import (
-	"errors"
 	"fmt"
 	"io"
-	"slices"
-	"strings"
 
 	"github.com/2329497804/blogX-server/common/res"
 	"github.com/2329497804/blogX-server/global"
 	"github.com/2329497804/blogX-server/models"
-	"github.com/2329497804/blogX-server/utils"
+	"github.com/2329497804/blogX-server/service/qiniu_service"
+	"github.com/2329497804/blogX-server/utils/files"
+	"github.com/2329497804/blogX-server/utils/hashs"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -34,7 +33,7 @@ func (ImageApi) ImageUploadView(c *gin.Context) {
 	// 文件后缀判断
 	fileName := fileHeader.Filename
 	var suffix string
-	suffix, err = imageSuffixJudge(fileName)
+	suffix, err = files.ImageSuffixJudge(fileName)
 	if err != nil {
 		res.FailWithError(err, c)
 		return
@@ -47,7 +46,7 @@ func (ImageApi) ImageUploadView(c *gin.Context) {
 	}
 	defer file.Close()
 	byteData, err := io.ReadAll(file)
-	hash := utils.MD5(byteData)
+	hash := hashs.MD5(byteData)
 	// 判断是否存在
 	var m models.ImageModel
 	err = global.DB.Take(&m, "hash = ?", hash).Error
@@ -58,6 +57,12 @@ func (ImageApi) ImageUploadView(c *gin.Context) {
 		return
 	}
 	// 存储文件
+	url, err := qiniu_service.SendReader(file, c)
+	if err != nil {
+		res.FailWithError(err, c)
+		return
+	}
+
 	fileDir := global.Config.Upload.Image.Dir
 	filePath := fmt.Sprintf("uploads/%s/%s.%s", fileDir, hash, suffix)
 	err = c.SaveUploadedFile(fileHeader, filePath)
@@ -78,21 +83,5 @@ func (ImageApi) ImageUploadView(c *gin.Context) {
 		return
 	}
 
-	res.OK(m.WebPath(), "图片上传成功", c)
-}
-
-func imageSuffixJudge(filename string) (suffix string, err error) {
-	l := strings.Split(filename, ".")
-	if len(l) < 2 {
-		err = errors.New("错误的文件名")
-		return
-	}
-	suffix = l[len(l)-1]
-	whiteList := global.Config.Upload.Image.WhiteList
-	ok := slices.Contains(whiteList, suffix)
-	if !ok {
-		err = errors.New("文件类型非法")
-		return
-	}
-	return
+	res.OK(m.WebPath(), "图片上传成功: " + url, c)
 }

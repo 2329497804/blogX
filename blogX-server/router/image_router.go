@@ -12,6 +12,7 @@ func ImageRouter(r *gin.RouterGroup) {
 
 	app := api.App.ImageApi
 	r.POST("", app.ImageUploadView)
+	r.POST("/qiniu", app.QiNiuGenToken)
 	r.GET("", middleware.AdminMiddleware, app.ImageListView)
 	r.DELETE("", middleware.AdminMiddleware, app.ImageDeleteView)
 }

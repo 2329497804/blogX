@@ -8,5 +8,6 @@ type QiNiu struct {
 	URI       string `yaml:"uri" json:"uri"`
 	Region    string `yaml:"region" json:"region"`
 	Prefix    string `yaml:"prefix" json:"prefix"`
-	Size      int    `yaml:"size" json:"size"` // 大小限制 单位mb
+	Size      int    `yaml:"size" json:"size"`     // 大小限制 单位mb
+	Expire    int    `yaml:"expire" json:"expire"` // 单位秒
 }
