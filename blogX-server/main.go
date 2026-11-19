@@ -1,10 +1,13 @@
 package main
 
 import (
+	"time"
+
 	"github.com/2329497804/blogX-server/core"
 	"github.com/2329497804/blogX-server/flags"
 	"github.com/2329497804/blogX-server/global"
 	"github.com/2329497804/blogX-server/router"
+	"github.com/mojocn/base64Captcha"
 )
 
 func main() {
@@ -13,6 +16,7 @@ func main() {
 	core.InitLogrus()
 	global.DB = core.InitDB()
 	global.Redis = core.InitRedis()
+	global.CaptchaStore = base64Captcha.NewMemoryStore(10240, 5*time.Minute)
 
 	flags.Run()
 
