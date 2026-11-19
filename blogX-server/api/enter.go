@@ -6,14 +6,16 @@ import (
 	"github.com/2329497804/blogX-server/api/image_api"
 	"github.com/2329497804/blogX-server/api/log_api"
 	"github.com/2329497804/blogX-server/api/site_api"
+	"github.com/2329497804/blogX-server/api/user_api"
 )
 
 type Api struct {
-	SiteApi    site_api.SiteApi
-	LogApi     log_api.LogApi
-	ImageApi   image_api.ImageApi
-	BannerApi  banner_api.BannerApi
-	CaptchaApi captcha_api.CaptchaApi
+	site_api.SiteApi
+	log_api.LogApi
+	image_api.ImageApi
+	banner_api.BannerApi
+	captcha_api.CaptchaApi
+	user_api.UserApi
 }
 
 var App = Api{}

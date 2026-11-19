@@ -63,18 +63,18 @@ site:
         qq_login: false
         username_pwd_login: false
         email_login: false
-        captcha: false
+        captcha: true
     index_right:
         list: []
     article:
         no_examine: false
 email:
-    domain: ""
-    port: "7777"
-    send_email: ""
-    auth_code: ""
-    send_name: ""
-    ssl: false
+    domain: "smtp.qq.com"
+    port: "587"
+    send_email: "2329497804@qq.com"
+    auth_code: "uqptrbyrsrfndiad"
+    send_nickname: "BlogX"
+    ssl: true
     tls: false
 qq:
     app_id: "2222"

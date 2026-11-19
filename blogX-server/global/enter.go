@@ -1,6 +1,8 @@
 package global
 
 import (
+	"sync"
+
 	"github.com/2329497804/blogX-server/conf"
 	"github.com/go-redis/redis"
 	"github.com/mojocn/base64Captcha"
@@ -14,4 +16,5 @@ var (
 	DB           *gorm.DB
 	Redis        *redis.Client
 	CaptchaStore base64Captcha.Store
+	EmailStore   sync.Map
 )
