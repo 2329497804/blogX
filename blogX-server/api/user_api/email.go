@@ -36,6 +36,10 @@ func (UserApi) SendEmailView(c *gin.Context) {
 		res.FailWithError(err, c)
 		return
 	}
+	if !global.Config.Site.Login.EmailLogin {
+		res.FailWithMsg("站点未启用邮箱注册", c)
+	}
+
 	code := randoms.CodeNum5()
 	id := randoms.ID()
 	var err error
@@ -79,6 +83,9 @@ func (UserApi) RegisterUserEmailView(c *gin.Context) {
 	if err := c.ShouldBindJSON(&req); err != nil {
 		res.FailWithError(err, c)
 		return
+	}
+	if !global.Config.Site.Login.EmailLogin {
+		res.FailWithMsg("站点未启用邮箱注册", c)
 	}
 
 	// 创建用户

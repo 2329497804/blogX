@@ -11,6 +11,8 @@ func UserRouter(r *gin.RouterGroup) {
 
 	app := api.App.UserApi
 
+	r.POST("/login", middleware.CaptchaMiddleware, app.PWDLoginApi)
+
 	er := r.Group("/email")
 	er.POST("/send", middleware.CaptchaMiddleware, app.SendEmailView)
 	er.POST("", middleware.EmailMiddleWare, app.RegisterUserEmailView)
