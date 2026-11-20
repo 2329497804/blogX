@@ -1,9 +1,11 @@
 package models
 
 import (
+	"math"
 	"time"
 
 	"github.com/2329497804/blogX-server/models/enum"
+	"gorm.io/gorm"
 )
 
 // UserModel 用户信息表
@@ -19,6 +21,18 @@ type UserModel struct {
 	OpenID         string            `gorm:"size:64" json:"openID"` // 第三方登陆的唯一id
 	Role           enum.RoleType     `json:"role"`                  // 角色 1 管理员  2 普通用户  3 访客
 	UserConfModel  *UserConfModel    `gorm:"foreignKey:UserID" json:"-"`
+	IP             string            `gorm:"size:32" json:"ip"`
+	Addr           string            `gorm:"size:256" json:"addr"`
+}
+
+func (u UserModel) AfterCreate(tx *gorm.DB) error {
+	return tx.Create(&UserConfModel{UserID: u.ID}).Error
+}
+
+func (u UserModel) CodeAge() int {
+	sub := time.Now().Sub(u.CreatedAt)
+	codeAge := math.Ceil(sub.Hours() / 24 / 365)
+	return int(codeAge)
 }
 
 // UserConfModel 用户配置表 1对1放到同一文件下

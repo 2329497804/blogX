@@ -1,7 +1,6 @@
 package user_api
 
 import (
-	"math"
 	"time"
 
 	"github.com/2329497804/blogX-server/common/res"
@@ -48,8 +47,6 @@ func (UserApi) UserDetailView(c *gin.Context) {
 		return
 	}
 
-	sub := time.Now().Sub(m.CreatedAt)
-	codeAge := int(math.Ceil(sub.Hours() / 24 / 365))
 	v := UserDetailResponse{
 		ID:                 m.ID,
 		Username:           m.Username,
@@ -64,7 +61,7 @@ func (UserApi) UserDetailView(c *gin.Context) {
 		OpenFans:           m.UserConfModel.OpenFans,
 		HomeStyleID:        m.UserConfModel.HomeStyleID,
 		CreatedAt:          m.CreatedAt,
-		CodeAge:            codeAge,
+		CodeAge:            m.CodeAge(),
 	}
 
 	res.OKWithData(v, c)
